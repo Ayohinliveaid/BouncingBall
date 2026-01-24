@@ -1,0 +1,17 @@
+body{
+    margin:0;
+    overflow: hidden;
+}
+
+
+.myCanvas{
+
+
+}
+
+.runner{
+    height:30px;
+    width:50px;
+    background-color:grey;
+ 
+}
