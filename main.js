@@ -160,8 +160,8 @@ Ball.prototype.reboundFixed = function (fixed) {
   this.vx = this.vx - 2 * dot * nx;
   this.vy = this.vy - 2 * dot * ny;
 
-  if (balls.indexOf(this) == 0) {
-    this.r = Math.max(this.r - 5, 0);
+  if (balls.indexOf(this) == 0 || balls.indexOf(this) == 1) {
+    // this.r = Math.max(this.r - 5, 0);
   } else {
     this.r += 1;
     this.c = fixed.c;
@@ -197,20 +197,38 @@ Ball.prototype.reboundMoving = function (moving) {
   let v1nAfter = (v1n * (m1 - m2) + 2 * m2 * v2n) / (m1 + m2);
   let v2nAfter = (v2n * (m2 - m1) + 2 * m1 * v1n) / (m1 + m2);
 
-  //除第一个以外的球变小
-  if (balls.indexOf(moving) == 0) {
-    // this.vx = 0;
-    // this.vy = 0;
-    this.r = Math.max(this.r - 5, 0);
-    // moving.r = Math.min(++moving.r, 200);
-    this.c = moving.c;
+  // //除第一个以外的球变小，和鼠标球对抗
+  // if (balls.indexOf(moving) == 0) {
+  //   // this.vx = 0;
+  //   // this.vy = 0;
+  //   this.r = Math.max(this.r - 5, 0);
+  //   // moving.r = Math.min(++moving.r, 200);
+  //   this.c = moving.c;
+  // }
+  // if (balls.indexOf(this) == 0) {
+  //   // moving.vx = 0;
+  //   // moving.vy = 0;
+  //   moving.r = Math.max(moving.r - 5, 0);
+  //   // this.r = Math.min(++this.r, 200);
+  //   moving.c = this.c;
+  // }
+  //第一个、第二个球自动对抗
+  if (balls.indexOf(moving) == 0 || balls.indexOf(moving) == 1) {
+    if (balls.indexOf(this) != 0 && balls.indexOf(this) != 1) {
+      if (this.c != moving.c) {
+        // moving.r = Math.min(++moving.r, 200);
+        this.r = Math.max(this.r - 1, 0);
+        this.c = moving.c;
+      }
+    }
   }
-  if (balls.indexOf(this) == 0) {
-    // moving.vx = 0;
-    // moving.vy = 0;
-    moving.r = Math.max(moving.r - 5, 0);
-    // this.r = Math.min(++this.r, 200);
-    moving.c = this.c;
+  if (balls.indexOf(this) == 0 || balls.indexOf(this) == 1) {
+    if (balls.indexOf(moving) != 0 && balls.indexOf(moving) != 1) {
+      if (moving.c != this.c) {
+        moving.r = Math.max(moving.r - 1, 0);
+        moving.c = this.c;
+      }
+    }
   }
 
   // 7合成新的速度（切向速度保持不变）
@@ -234,14 +252,14 @@ Ball.prototype.reboundMoving = function (moving) {
 var v = 10;
 // var ball=new Ball(300,300,40,random(-v,v),random(-v,v),"lightblue");
 // var ball = new Ball(300, 300, 40, random(-v, v), random(-v, v), "lightblue");
-var balls = Array(20)
+var balls = Array(100)
   .fill()
   .map(
     () =>
       new Ball(
         random(40, 400),
         random(40, 400),
-        random(40, 70),
+        random(10, 20),
         random(-v, v),
         random(-v, v),
         randomColor(),
@@ -286,6 +304,8 @@ function loop(timestamp) {
 
   let threshhold = 2;
   let count = balls.filter((v, i) => v.r > threshhold).length;
+  let count0 = balls.filter((v, i) => v.c == balls[0].c).length;
+  let count1 = balls.filter((v, i) => v.c == balls[1].c).length;
 
   if (balls[0].r > threshhold) {
     if (count == 1) {
@@ -293,11 +313,20 @@ function loop(timestamp) {
       window.location.reload();
     } else {
       //当半径没有到最小，继续运行
-      console.log("Balls bouncing. Count: ", count);
+      console.log(
+        "Balls bouncing. Count: ",
+        count,
+        "balls[0]:\n",
+        balls[0].c,
+        count0,
+        "balls[1]:\n",
+        balls[1].c,
+        count1,
+      );
       window.requestAnimationFrame(loop);
     }
   } else {
-    alert("congratulations! Remaining balls: " + count);
+    alert("Congratulations! Remaining balls: " + count);
     window.location.reload();
   }
 
