@@ -167,6 +167,7 @@ Ball.prototype.reboundFixed = function (fixed) {
     this.r = Math.max(this.r - 1, 0);
   } else {
     this.r += 5;
+    this.c = fixed.c;
   }
 };
 //模拟两个运动球的完全弹性碰撞，法向量方向根据质量分配速度，切向量方向不变
@@ -204,12 +205,14 @@ Ball.prototype.reboundMoving = function (moving) {
     // this.vx = 0;
     // this.vy = 0;
     this.r = Math.max(this.r - 5, 0);
+    this.c = moving.c;
     // this.r -= 5;
   }
   if (balls.indexOf(this) == 0) {
     // moving.vx = 0;
     // moving.vy = 0;
     moving.r = Math.max(moving.r - 5, 0);
+    moving.c = this.c;
     // moving.r -= 5;
   }
 
