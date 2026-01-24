@@ -35,9 +35,8 @@ Ball.prototype.draw = function () {
   ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
   ctx.fill();
 };
-
-Ball.prototype.move = function () {
-  //遇到边框自动反弹
+//move选择一、遇到边框自动反弹
+Ball.prototype.moveToRebound = function () {
   let overlap = 0;
   overlap = this.r - this.x;
   if (overlap > 0) {
@@ -70,6 +69,27 @@ Ball.prototype.move = function () {
   // }
   // if (this.r >= 40) this.s = false;
   // if (this.r <= 30) this.s = true;
+};
+//move选择二、穿越边框循环
+Ball.prototype.moveToTraverse = function () {
+  this.x += this.vx;
+  this.y += this.vy;
+  if (this.x < 0 - this.r) {
+    this.x = width + this.r;
+    this.y = height - this.y;
+  }
+  if (this.x - width > this.r) {
+    this.x = 0 - this.r;
+    this.y = height - this.y;
+  }
+  if (this.y < 0 - this.r) {
+    this.y = height + this.r;
+    this.x = width - this.x;
+  }
+  if (this.y > height + this.r) {
+    this.y = 0 - this.r;
+    this.x = width - this.x;
+  }
 };
 Ball.prototype.collide = function () {
   if (this.collision) {
@@ -190,7 +210,7 @@ Ball.prototype.reboundMoving = function (moving) {
 var v = 10;
 // var ball=new Ball(300,300,40,random(-v,v),random(-v,v),"lightblue");
 // var ball = new Ball(300, 300, 40, random(-v, v), random(-v, v), "lightblue");
-var balls = Array(2)
+var balls = Array(1)
   .fill()
   .map(
     () =>
@@ -226,7 +246,7 @@ function loop(timestamp) {
   ctx.fillRect(0, 0, width, height); //直接覆盖原来的画布，并通过半透明产生重影效果
   mouseBall.draw();
   balls.forEach((v, i) => {
-    balls[i].move();
+    balls[i].moveToTraverse();
     balls[i].collide();
     balls[i].draw();
   });
@@ -235,22 +255,24 @@ function loop(timestamp) {
   //首球消失，游戏结束，输出剩余球的数量
   //只剩首球，游戏失败
 
+  window.requestAnimationFrame(loop);
+
   let threshhold = 5;
   let count = balls.filter((v, i) => v.r > threshhold).length;
 
-  if (balls[0].r > threshhold) {
-    if (count == 1) {
-      alert("all available balls lost!");
-      window.location.reload();
-    } else {
-      //当半径没有到最小，继续运行
-      window.requestAnimationFrame(loop);
-      console.log("Balls bouncing. Count: ", count);
-    }
-  } else {
-    alert("congratulations! remaining balls: " + count);
-    window.location.reload();
-  }
+  // if (balls[0].r > threshhold) {
+  //   if (count == 1) {
+  //     alert("all available balls lost!");
+  //     window.location.reload();
+  //   } else {
+  //     //当半径没有到最小，继续运行
+  //     window.requestAnimationFrame(loop);
+  //     console.log("Balls bouncing. Count: ", count);
+  //   }
+  // } else {
+  //   alert("congratulations! remaining balls: " + count);
+  //   window.location.reload();
+  // }
 
   // if (Math.max(...balls.map((v) => v.r)) > 0.01) {
   //   //当半径没有到最小，继续运行
