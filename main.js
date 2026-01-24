@@ -130,8 +130,6 @@ Ball.prototype.collide = function () {
       if (this != v) {
         if ((this.x - v.x) ** 2 + (this.y - v.y) ** 2 < (this.r + v.r) ** 2) {
           // this.c = randomColor();
-          // this.vx = -this.vx;
-          // this.vy = -this.vy;
           this.reboundMoving(v);
         }
       }
@@ -275,7 +273,7 @@ function loop(timestamp) {
   balls.forEach((v, i) => {
     // balls[i].moveToRebound();
     // balls[i].moveToTraverse();
-    balls[i].moveToReboundAndTraverse();
+    balls[i].moveToRebound();
 
     balls[i].collide();
     balls[i].draw();
