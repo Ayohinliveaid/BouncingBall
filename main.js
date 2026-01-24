@@ -42,25 +42,24 @@ Ball.prototype.moveToRebound = function () {
   let overlap = 0;
   overlap = this.r - this.x;
   if (overlap > 0) {
-    this.x += overlap; //救球，超出屏幕后退回
     this.vx = -this.vx; //反弹
+    this.x += overlap; //救球，超出屏幕后退回
   }
   overlap = this.x + this.r - width;
   if (overlap > 0) {
-    this.x -= overlap;
     this.vx = -this.vx;
+    this.x -= overlap;
   }
   overlap = this.r - this.y;
   if (overlap > 0) {
-    this.y += overlap;
     this.vy = -this.vy;
+    this.y += overlap;
   }
   overlap = this.y + this.r - height;
   if (overlap > 0) {
-    this.y -= overlap;
     this.vy = -this.vy;
+    this.y -= overlap;
   }
-
   // //改变球的大小
   // if (this.s) {
   //   this.r += 0.2;
@@ -162,9 +161,9 @@ Ball.prototype.reboundFixed = function (fixed) {
   this.vy = this.vy - 2 * dot * ny;
 
   if (balls.indexOf(this) == 0) {
-    this.r = Math.max(this.r - 1, 0);
+    this.r = Math.max(this.r - 5, 0);
   } else {
-    this.r += 5;
+    this.r += 1;
     this.c = fixed.c;
   }
 };
@@ -203,15 +202,15 @@ Ball.prototype.reboundMoving = function (moving) {
     // this.vx = 0;
     // this.vy = 0;
     this.r = Math.max(this.r - 5, 0);
+    // moving.r = Math.min(++moving.r, 200);
     this.c = moving.c;
-    // this.r -= 5;
   }
   if (balls.indexOf(this) == 0) {
     // moving.vx = 0;
     // moving.vy = 0;
     moving.r = Math.max(moving.r - 5, 0);
+    // this.r = Math.min(++this.r, 200);
     moving.c = this.c;
-    // moving.r -= 5;
   }
 
   // 7合成新的速度（切向速度保持不变）
@@ -235,21 +234,21 @@ Ball.prototype.reboundMoving = function (moving) {
 var v = 10;
 // var ball=new Ball(300,300,40,random(-v,v),random(-v,v),"lightblue");
 // var ball = new Ball(300, 300, 40, random(-v, v), random(-v, v), "lightblue");
-var balls = Array(10)
+var balls = Array(20)
   .fill()
   .map(
     () =>
       new Ball(
         random(40, 400),
         random(40, 400),
-        random(60, 80),
+        random(40, 70),
         random(-v, v),
         random(-v, v),
         randomColor(),
       ),
   );
 
-balls[0].r = 100;
+// balls[0].r = 100;
 
 //#鼠标控制球
 var mouseBall = new Ball(40, 40, 30, 10, 10, "white");
@@ -271,9 +270,9 @@ function loop(timestamp) {
   ctx.fillRect(0, 0, width, height); //直接覆盖原来的画布，并通过半透明产生重影效果
   mouseBall.draw();
   balls.forEach((v, i) => {
-    // balls[i].moveToRebound();
-    // balls[i].moveToTraverse();
     balls[i].moveToRebound();
+    // balls[i].moveToTraverse();
+    // balls[i].moveToReboundAndTraverse();
 
     balls[i].collide();
     balls[i].draw();
@@ -285,7 +284,7 @@ function loop(timestamp) {
 
   // window.requestAnimationFrame(loop);
 
-  let threshhold = 20;
+  let threshhold = 2;
   let count = balls.filter((v, i) => v.r > threshhold).length;
 
   if (balls[0].r > threshhold) {
@@ -294,8 +293,8 @@ function loop(timestamp) {
       window.location.reload();
     } else {
       //当半径没有到最小，继续运行
-      window.requestAnimationFrame(loop);
       console.log("Balls bouncing. Count: ", count);
+      window.requestAnimationFrame(loop);
     }
   } else {
     alert("congratulations! Remaining balls: " + count);
