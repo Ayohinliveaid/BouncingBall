@@ -17,6 +17,8 @@ function randomColor() {
   // return("rgb(0,0,"+random(0,255)+")");
   // return("rgb(0,"+random(230,255)+",0)");
 }
+
+//#class
 function Ball(x, y, r, vx, vy, color) {
   this.x = x;
   this.y = y;
@@ -116,6 +118,12 @@ Ball.prototype.reboundFixed = function (fixed) {
   // 减去速度在法线方向的分量在xy方向上的分量
   this.vx = this.vx - 2 * dot * nx;
   this.vy = this.vy - 2 * dot * ny;
+
+  if (balls.indexOf(this) == 0) {
+    this.r = Math.max(this.r - 1, 0);
+  } else {
+    this.r += 5;
+  }
 };
 //模拟两个运动球的完全弹性碰撞，法向量方向根据质量分配速度，切向量方向不变
 Ball.prototype.reboundMoving = function (moving) {
@@ -147,13 +155,27 @@ Ball.prototype.reboundMoving = function (moving) {
   let v1nAfter = (v1n * (m1 - m2) + 2 * m2 * v2n) / (m1 + m2);
   let v2nAfter = (v2n * (m2 - m1) + 2 * m1 * v1n) / (m1 + m2);
 
+  //除第一个以外的球变小
+  if (balls.indexOf(moving) == 0) {
+    // this.vx = 0;
+    // this.vy = 0;
+    this.r = Math.max(this.r - 5, 0);
+    // this.r -= 5;
+  }
+  if (balls.indexOf(this) == 0) {
+    // moving.vx = 0;
+    // moving.vy = 0;
+    moving.r = Math.max(moving.r - 5, 0);
+    // moving.r -= 5;
+  }
+
   // 7合成新的速度（切向速度保持不变）
   this.vx = v1nAfter * nx + v1t * tx;
   this.vy = v1nAfter * ny + v1t * ty;
   moving.vx = v2nAfter * nx + v2t * tx;
   moving.vy = v2nAfter * ny + v2t * ty;
 
-  // 8修正重叠位置（防止两球“卡在一起”）
+  // 8修正重叠位置
   let overlap = this.r + moving.r - dist; // 重叠距离
   if (overlap > 0) {
     // 按质量比例移动两球
@@ -163,9 +185,11 @@ Ball.prototype.reboundMoving = function (moving) {
     moving.y -= ny * ((overlap * m1) / (m1 + m2));
   }
 };
+
+//#初始化球数组
 var v = 10;
 // var ball=new Ball(300,300,40,random(-v,v),random(-v,v),"lightblue");
-var ball = new Ball(300, 300, 40, random(-v, v), random(-v, v), "lightblue");
+// var ball = new Ball(300, 300, 40, random(-v, v), random(-v, v), "lightblue");
 var balls = Array(2)
   .fill()
   .map(
@@ -173,16 +197,16 @@ var balls = Array(2)
       new Ball(
         random(40, 400),
         random(40, 400),
-        random(10, 80),
+        random(60, 80),
         random(-v, v),
         random(-v, v),
         randomColor(),
       ),
   );
-var t0;
-var t;
 
-//鼠标控制球
+balls[0].r = 100;
+
+//#鼠标控制球
 var mouseBall = new Ball(40, 40, 30, 10, 10, "white");
 canvas.addEventListener("mouseover", (e) => {
   mouseBall.r = 30;
@@ -195,10 +219,8 @@ canvas.addEventListener("mousemove", (e) => {
   mouseBall.y = e.clientY;
 });
 
+//#动画部分
 function loop(timestamp) {
-  if (t0 == undefined) t0 = timestamp;
-  t = timestamp - t0;
-
   // ctx.clearRect(0,0,width,height);
   ctx.fillStyle = "rgba(0,0,0,0.3)";
   ctx.fillRect(0, 0, width, height); //直接覆盖原来的画布，并通过半透明产生重影效果
@@ -206,18 +228,38 @@ function loop(timestamp) {
   balls.forEach((v, i) => {
     balls[i].move();
     balls[i].collide();
-
     balls[i].draw();
   });
 
-  if (Math.max(...balls.map((v) => v.r)) > 0.01) {
-    //当半径没有到最小，继续运行
-    window.requestAnimationFrame(loop);
-    console.log("running");
+  //数组首球触碰会减小球，固定球触碰会增加球，减小首球
+  //首球消失，游戏结束，输出剩余球的数量
+  //只剩首球，游戏失败
+
+  let threshhold = 5;
+  let count = balls.filter((v, i) => v.r > threshhold).length;
+
+  if (balls[0].r > threshhold) {
+    if (count == 1) {
+      alert("all available balls lost!");
+      window.location.reload();
+    } else {
+      //当半径没有到最小，继续运行
+      window.requestAnimationFrame(loop);
+      console.log("Balls bouncing. Count: ", count);
+    }
+  } else {
+    alert("congratulations! remaining balls: " + count);
+    window.location.reload();
   }
+
+  // if (Math.max(...balls.map((v) => v.r)) > 0.01) {
+  //   //当半径没有到最小，继续运行
+  //   window.requestAnimationFrame(loop);
+  //   console.log("Balls bouncing");
+  // }
   //  //cancelAnimationFrame 主要用于 取消已排队但还没执行的帧，而这里的动画是动态循环的，每次新帧都是在前一帧执行时才请求的，所以不需要取消。
   // else {
   //   window.cancelAnimationFrame(id);
   // }
 }
-const id = window.requestAnimationFrame(loop);
+window.requestAnimationFrame(loop);
