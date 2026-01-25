@@ -1,10 +1,11 @@
 //bouncing ball
 let canvas = document.querySelector(".myCanvas");
 let ctx = canvas.getContext("2d");
-canvas.height = 500;
+canvas.height = 600;
 canvas.width = window.innerWidth;
 let height = canvas.height;
 let width = canvas.width;
+canvas.style.touchAction = "none"; //移动端避免滑动影响
 
 let threshold = 2; //球视为存在的最小大小
 let total = 20; //球的总数
@@ -278,13 +279,13 @@ var balls = Array(total)
 
 //#鼠标控制球
 var mouseBall = new Ball(40, 40, 30, 10, 10, "white");
-canvas.addEventListener("mouseover", (e) => {
+canvas.addEventListener("pointerenter", (e) => {
   mouseBall.r = 30;
 });
-canvas.addEventListener("mouseout", (e) => {
+canvas.addEventListener("pointerleave", (e) => {
   mouseBall.r = 0;
 });
-canvas.addEventListener("mousemove", (e) => {
+canvas.addEventListener("pointermove", (e) => {
   mouseBall.x = e.clientX;
   mouseBall.y = e.clientY;
 });
@@ -293,6 +294,7 @@ canvas.addEventListener("mousemove", (e) => {
 function loop(timestamp) {
   // ctx.clearRect(0,0,width,height);
   ctx.fillStyle = "rgba(0,0,0,0.3)";
+  // ctx.clearRect(0, 0, width, height);
   ctx.fillRect(0, 0, width, height); //直接覆盖原来的画布，并通过半透明产生重影效果
   mouseBall.draw();
   //r缩小到threshold后直接消失
@@ -351,18 +353,18 @@ function loop(timestamp) {
     window.location.reload();
   } else {
     //当半径没有到最小，继续运行
-    console.log(
-      "Balls bouncing. Count: ",
-      count,
-      "balls[0]:\n",
-      balls[0].c,
-      balls[0].r,
-      count0,
-      "balls[1]:\n",
-      balls[1].c,
-      balls[1].r,
-      count1,
-    );
+    // console.log(
+    //   "Balls bouncing. Count: ",
+    //   count,
+    //   "balls[0]:\n",
+    //   balls[0].c,
+    //   balls[0].r,
+    //   count0,
+    //   "balls[1]:\n",
+    //   balls[1].c,
+    //   balls[1].r,
+    //   count1,
+    // );
     window.requestAnimationFrame(loop);
   }
 
