@@ -278,7 +278,7 @@ var balls = Array(total)
 // balls[0].r = 100;
 
 //#鼠标控制球
-var mouseBall = new Ball(40, 40, 30, 10, 10, "white");
+var mouseBall = new Ball(40, 40, 30, 10, 10, "black");
 canvas.addEventListener("pointerenter", (e) => {
   mouseBall.r = 30;
 });
@@ -293,8 +293,9 @@ canvas.addEventListener("pointermove", (e) => {
 //#动画部分
 function loop(timestamp) {
   // ctx.clearRect(0,0,width,height);
-  ctx.fillStyle = "rgba(0,0,0,0.3)";
-  ctx.fillRect(0, 0, width, height); //直接覆盖原来的画布，并通过半透明产生重影效果
+  // ctx.fillStyle = "rgba(0,0,0,0.3)";
+  ctx.clearRect(0, 0, width, height);
+  // ctx.fillRect(0, 0, width, height); //直接覆盖原来的画布，并通过半透明产生重影效果
   mouseBall.draw();
   //r缩小到threshold后直接消失
   // for(let i=0;i<balls.length;i++){
