@@ -254,7 +254,7 @@ Ball.prototype.reboundMoving = function (moving) {
 };
 
 //#初始化球数组
-var v = 2;
+var v = 5;
 // var ball=new Ball(300,300,40,random(-v,v),random(-v,v),"lightblue");
 // var ball = new Ball(300, 300, 40, random(-v, v), random(-v, v), "lightblue");
 
@@ -275,12 +275,15 @@ var balls = Array(total)
 // balls[0].r = 100;
 
 //#鼠标控制球
-var mouseBall = new Ball(40, 40, 30, 10, 10, "black");
+var mouseBall = new Ball(0, 0, 0, 0, 0, "black");
 canvas.addEventListener("pointerenter", (e) => {
   mouseBall.r = 30;
 });
 canvas.addEventListener("pointerleave", (e) => {
   mouseBall.r = 0;
+  //避免碰撞xy像素点，放到左上角实现完全消失
+  mouseBall.x = 0;
+  mouseBall.y = 0;
 });
 canvas.addEventListener("pointermove", (e) => {
   mouseBall.x = e.clientX;
