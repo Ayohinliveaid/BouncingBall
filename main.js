@@ -31,7 +31,6 @@ function Ball(x, y, r, vx, vy, color) {
   this.vy = vy;
   this.c = color;
   this.s = false; //size changeing flag
-  this.collision = true;
 }
 Ball.prototype.draw = function () {
   ctx.beginPath();
@@ -119,25 +118,23 @@ Ball.prototype.moveToReboundAndTraverse = function () {
   }
 };
 Ball.prototype.collide = function () {
-  if (this.collision) {
-    //鼠标控制球mouseBall碰撞检测
-    if (
-      (this.x - mouseBall.x) ** 2 + (this.y - mouseBall.y) ** 2 <
-      (this.r + mouseBall.r) ** 2
-    ) {
-      // this.c = randomColor();
-      this.reboundFixed(mouseBall);
-    }
-    balls.forEach((v) => {
-      //数组球检测
-      if (this != v) {
-        if ((this.x - v.x) ** 2 + (this.y - v.y) ** 2 < (this.r + v.r) ** 2) {
-          // this.c = randomColor();
-          this.reboundMoving(v);
-        }
-      }
-    });
+  //鼠标控制球mouseBall碰撞检测
+  if (
+    (this.x - mouseBall.x) ** 2 + (this.y - mouseBall.y) ** 2 <
+    (this.r + mouseBall.r) ** 2
+  ) {
+    // this.c = randomColor();
+    this.reboundFixed(mouseBall);
   }
+  balls.forEach((v) => {
+    //数组球检测
+    if (this != v) {
+      if ((this.x - v.x) ** 2 + (this.y - v.y) ** 2 < (this.r + v.r) ** 2) {
+        // this.c = randomColor();
+        this.reboundMoving(v);
+      }
+    }
+  });
 };
 //模拟撞击固定球，运动球只改变速度方向，法向量方向速度相反，切向量速度不变
 Ball.prototype.reboundFixed = function (fixed) {
@@ -257,7 +254,7 @@ Ball.prototype.reboundMoving = function (moving) {
 };
 
 //#初始化球数组
-var v = 7;
+var v = 2;
 // var ball=new Ball(300,300,40,random(-v,v),random(-v,v),"lightblue");
 // var ball = new Ball(300, 300, 40, random(-v, v), random(-v, v), "lightblue");
 
@@ -351,7 +348,7 @@ function loop(timestamp) {
   //   balls[0].r <= threshold &&
   //   balls[1].r <= threshold
   // ) {
-  //   alert("Congratulations!You win!");
+  //   alert("Congratulations! You win!");
   //   window.location.reload();
   // } else if (count0 > target) {
   //   alert("Balls[0] win!");
