@@ -8,12 +8,12 @@ let width = canvas.width;
 canvas.style.touchAction = "none"; //移动端避免滑动影响
 
 let thresholdSize = 5; //球视为存在的最小大小
-let total = 10; //球的总数
+let total = 3; //球的总数
 let lastTime = null; //记录上一帧的时间，实现小球速度为每秒移动距离，而不是每帧移动距离ball.x+=ball.vx
 let portion = 1;
 let v = 200; //balls最大速度
-let minSize = 30;
-let maxSize = 40;
+let minSize = 50;
+let maxSize = 60;
 
 function random(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
