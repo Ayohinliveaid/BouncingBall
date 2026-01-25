@@ -314,7 +314,7 @@ function loop(timestamp) {
   //首球消失，游戏结束，输出剩余球的数量
   //只剩首球，游戏失败
 
-  // window.requestAnimationFrame(loop);
+  window.requestAnimationFrame(loop);
 
   var threshold = 2; //球视为存在的最小大小
   let count = balls.filter((v, i) => v.r > threshold).length;
@@ -333,40 +333,40 @@ function loop(timestamp) {
   //   window.location.reload();
   // }
 
-  //balls[1]对抗balls[0]
-  let target = Math.floor(total * 0.8);
-  let count0 = balls.filter((v, i) => v.c == balls[0].c).length;
-  let count1 = balls.filter((v, i) => v.c == balls[1].c).length;
-  if (
-    count0 == 1 && //fir sec不会消失
-    count1 == 1 &&
-    balls[0].r <= threshold &&
-    balls[1].r <= threshold
-  ) {
-    alert("Congratulations!You win!");
-    window.location.reload();
-  } else if (count0 > target) {
-    alert("Balls[0] win!");
-    window.location.reload();
-  } else if (count1 > target) {
-    alert("Balls[1] win!");
-    window.location.reload();
-  } else {
-    //当半径没有到最小，继续运行
-    // console.log(
-    //   "Balls bouncing. Count: ",
-    //   count,
-    //   "balls[0]:\n",
-    //   balls[0].c,
-    //   balls[0].r,
-    //   count0,
-    //   "balls[1]:\n",
-    //   balls[1].c,
-    //   balls[1].r,
-    //   count1,
-    // );
-    window.requestAnimationFrame(loop);
-  }
+  // //balls[1]对抗balls[0]
+  // let target = Math.floor(total * 0.8);
+  // let count0 = balls.filter((v, i) => v.c == balls[0].c).length;
+  // let count1 = balls.filter((v, i) => v.c == balls[1].c).length;
+  // if (
+  //   count0 == 1 && //fir sec不会消失
+  //   count1 == 1 &&
+  //   balls[0].r <= threshold &&
+  //   balls[1].r <= threshold
+  // ) {
+  //   alert("Congratulations!You win!");
+  //   window.location.reload();
+  // } else if (count0 > target) {
+  //   alert("Balls[0] win!");
+  //   window.location.reload();
+  // } else if (count1 > target) {
+  //   alert("Balls[1] win!");
+  //   window.location.reload();
+  // } else {
+  //   当半径没有到最小，继续运行
+  //   console.log(
+  //     "Balls bouncing. Count: ",
+  //     count,
+  //     "balls[0]:\n",
+  //     balls[0].c,
+  //     balls[0].r,
+  //     count0,
+  //     "balls[1]:\n",
+  //     balls[1].c,
+  //     balls[1].r,
+  //     count1,
+  //   );
+  //   window.requestAnimationFrame(loop);
+  // }
 
   // if (Math.max(...balls.map((v) => v.r)) > 0.01) {
   //   //当半径没有到最小，继续运行
