@@ -336,10 +336,10 @@ function loop(timestamp) {
   let count0 = balls.filter((v, i) => v.c == balls[0].c).length;
   let count1 = balls.filter((v, i) => v.c == balls[1].c).length;
   if (
-    count0 == 0 &&
-    count1 == 0 &&
-    balls[0].r < threshold &&
-    balls[1].r < threshold
+    count0 == 1 && //fir sec不会消失
+    count1 == 1 &&
+    balls[0].r <= threshold &&
+    balls[1].r <= threshold
   ) {
     alert("Congratulations!You win!");
     window.location.reload();
@@ -356,9 +356,11 @@ function loop(timestamp) {
       count,
       "balls[0]:\n",
       balls[0].c,
+      balls[0].r,
       count0,
       "balls[1]:\n",
       balls[1].c,
+      balls[1].r,
       count1,
     );
     window.requestAnimationFrame(loop);
