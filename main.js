@@ -317,7 +317,17 @@ function loop(timestamp) {
   window.requestAnimationFrame(loop);
 
   var threshold = 2; //球视为存在的最小大小
-  let count = balls.filter((v, i) => v.r > threshold).length;
+  let count = 0;
+  let count0 = 0;
+  let count1 = 0;
+
+  for (let b of balls) {
+    if (b.r > threshold) {
+      count++;
+      if (b.c === balls[0].c) count0++;
+      else if (b.c === balls[1].c) count1++;
+    }
+  }
   // //鼠标球对抗balls[0]
   // if (balls[0].r > threshold) {
   //   if (count == 1) {
@@ -335,8 +345,6 @@ function loop(timestamp) {
 
   // //balls[1]对抗balls[0]
   // let target = Math.floor(total * 0.8);
-  // let count0 = balls.filter((v, i) => v.c == balls[0].c).length;
-  // let count1 = balls.filter((v, i) => v.c == balls[1].c).length;
   // if (
   //   count0 == 1 && //fir sec不会消失
   //   count1 == 1 &&
