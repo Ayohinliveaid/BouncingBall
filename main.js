@@ -9,6 +9,9 @@ canvas.style.touchAction = "none"; //移动端避免滑动影响
 
 let threshold = 2; //球视为存在的最小大小
 let total = 20; //球的总数
+let lastTime = null; //记录上一帧的时间，实现小球速度为每秒移动距离，而不是每帧移动距离ball.x+=ball.vx
+let portion = 1;
+let v = 200; //balls最大速度
 
 function random(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
@@ -39,9 +42,9 @@ Ball.prototype.draw = function () {
   ctx.fill();
 };
 //move选择一、遇到边框自动反弹
-Ball.prototype.moveToRebound = function () {
-  this.x += this.vx;
-  this.y += this.vy;
+Ball.prototype.moveToRebound = function (portion = 1) {
+  this.x += this.vx * portion;
+  this.y += this.vy * portion;
   let overlap = 0;
   overlap = this.r - this.x;
   if (overlap > 0) {
@@ -254,7 +257,6 @@ Ball.prototype.reboundMoving = function (moving) {
 };
 
 //#初始化球数组
-var v = 5;
 // var ball=new Ball(300,300,40,random(-v,v),random(-v,v),"lightblue");
 // var ball = new Ball(300, 300, 40, random(-v, v), random(-v, v), "lightblue");
 
@@ -301,8 +303,12 @@ function loop(timestamp) {
   // for(let i=0;i<balls.length;i++){
   //   if(balls[i].r<threshold)
   // }
+  if (lastTime != null) {
+    portion = (timestamp - lastTime) / 1000;
+  }
+  lastTime = timestamp;
   balls.forEach((v, i) => {
-    balls[i].moveToRebound();
+    balls[i].moveToRebound(portion);
     // balls[i].moveToTraverse();
     // balls[i].moveToReboundAndTraverse();
 
