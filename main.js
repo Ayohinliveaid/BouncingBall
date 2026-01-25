@@ -283,12 +283,13 @@ var balls = Array(total)
 //#鼠标控制球
 var mouseBall = new Ball(0, 0, 0, 0, 0, "black");
 canvas.addEventListener("pointerenter", (e) => {
-  mouseBall.r = 30;
+  // mouseBall.r = 30;
 });
 canvas.addEventListener("pointerleave", (e) => {
   mouseBall.r = 0;
 });
 canvas.addEventListener("pointermove", (e) => {
+  mouseBall.r = 30;
   mouseBall.x = e.clientX;
   mouseBall.y = e.clientY;
 });
