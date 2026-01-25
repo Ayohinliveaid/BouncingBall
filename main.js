@@ -7,11 +7,13 @@ let height = canvas.height;
 let width = canvas.width;
 canvas.style.touchAction = "none"; //移动端避免滑动影响
 
-let threshold = 2; //球视为存在的最小大小
-let total = 10; //球的总数
+let thresholdSize = 5; //球视为存在的最小大小
+let total = 3; //球的总数
 let lastTime = null; //记录上一帧的时间，实现小球速度为每秒移动距离，而不是每帧移动距离ball.x+=ball.vx
 let portion = 1;
 let v = 200; //balls最大速度
+let minSize = 50;
+let maxSize = 60;
 
 function random(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
@@ -36,10 +38,12 @@ function Ball(x, y, r, vx, vy, color) {
   this.s = false; //size changeing flag
 }
 Ball.prototype.draw = function () {
-  ctx.beginPath();
-  ctx.fillStyle = this.c;
-  ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
-  ctx.fill();
+  if (this.r > thresholdSize) {
+    ctx.beginPath();
+    ctx.fillStyle = this.c;
+    ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
+    ctx.fill();
+  }
 };
 //move选择一、遇到边框自动反弹
 Ball.prototype.moveToRebound = function (portion = 1) {
@@ -220,7 +224,7 @@ Ball.prototype.reboundMoving = function (moving) {
   if (balls.indexOf(moving) == 0 || balls.indexOf(moving) == 1) {
     if (balls.indexOf(this) != 0 && balls.indexOf(this) != 1) {
       if (this.c != moving.c) {
-        if (moving.r > threshold) {
+        if (moving.r > thresholdSize) {
           // moving.r = Math.min(++moving.r, 200);
           this.r = Math.max(this.r - 1, 0);
           this.c = moving.c;
@@ -231,7 +235,7 @@ Ball.prototype.reboundMoving = function (moving) {
   if (balls.indexOf(this) == 0 || balls.indexOf(this) == 1) {
     if (balls.indexOf(moving) != 0 && balls.indexOf(moving) != 1) {
       if (moving.c != this.c) {
-        if (this.r > threshold) {
+        if (this.r > thresholdSize) {
           moving.r = Math.max(moving.r - 1, 0);
           moving.c = this.c;
         }
@@ -265,9 +269,9 @@ var balls = Array(total)
   .map(
     () =>
       new Ball(
-        random(40, 400),
-        random(40, 400),
-        random(30, 40),
+        random(0, width),
+        random(0, width),
+        random(minSize, maxSize),
         random(-v, v),
         random(-v, v),
         randomColor(),
@@ -283,9 +287,6 @@ canvas.addEventListener("pointerenter", (e) => {
 });
 canvas.addEventListener("pointerleave", (e) => {
   mouseBall.r = 0;
-  //避免碰撞xy像素点，放到左上角实现完全消失
-  mouseBall.x = 0;
-  mouseBall.y = 0;
 });
 canvas.addEventListener("pointermove", (e) => {
   mouseBall.x = e.clientX;
@@ -299,9 +300,9 @@ function loop(timestamp) {
   ctx.clearRect(0, 0, width, height);
   // ctx.fillRect(0, 0, width, height); //直接覆盖原来的画布，并通过半透明产生重影效果
   mouseBall.draw();
-  //r缩小到threshold后直接消失
+  //r缩小到thresholdSize后直接消失
   // for(let i=0;i<balls.length;i++){
-  //   if(balls[i].r<threshold)
+  //   if(balls[i].r<thresholdSize)
   // }
   if (lastTime != null) {
     portion = (timestamp - lastTime) / 1000;
@@ -322,20 +323,20 @@ function loop(timestamp) {
 
   window.requestAnimationFrame(loop);
 
-  var threshold = 2; //球视为存在的最小大小
+  var thresholdSize = 2; //球视为存在的最小大小
   let count = 0;
   let count0 = 0;
   let count1 = 0;
 
   for (let b of balls) {
-    if (b.r > threshold) {
+    if (b.r > thresholdSize) {
       count++;
       if (b.c === balls[0].c) count0++;
       else if (b.c === balls[1].c) count1++;
     }
   }
   // //鼠标球对抗balls[0]
-  // if (balls[0].r > threshold) {
+  // if (balls[0].r > thresholdSize) {
   //   if (count == 1) {
   //     alert("all available balls lost!");
   //     window.location.reload();
@@ -354,8 +355,8 @@ function loop(timestamp) {
   // if (
   //   count0 == 1 && //fir sec不会消失
   //   count1 == 1 &&
-  //   balls[0].r <= threshold &&
-  //   balls[1].r <= threshold
+  //   balls[0].r <= thresholdSize &&
+  //   balls[1].r <= thresholdSize
   // ) {
   //   alert("Congratulations! You win!");
   //   window.location.reload();
