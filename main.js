@@ -251,12 +251,14 @@ var balls = Array(20)
 // balls[0].r = 100;
 
 //#鼠标控制球
-var mouseBall = new Ball(40, 40, 30, 10, 10, "white");
+var mouseBall = new Ball(40, 40, 0, 0, 0, "white");
 canvas.addEventListener("mouseover", (e) => {
   mouseBall.r = 30;
 });
 canvas.addEventListener("mouseout", (e) => {
   mouseBall.r = 0;
+  mouseBall.x = 0;
+  mouseBall.y = 0;
 });
 canvas.addEventListener("mousemove", (e) => {
   mouseBall.x = e.clientX;
