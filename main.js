@@ -352,18 +352,18 @@ function loop(timestamp) {
     window.location.reload();
   } else {
     //当半径没有到最小，继续运行
-    console.log(
-      "Balls bouncing. Count: ",
-      count,
-      "balls[0]:\n",
-      balls[0].c,
-      balls[0].r,
-      count0,
-      "balls[1]:\n",
-      balls[1].c,
-      balls[1].r,
-      count1,
-    );
+    // console.log(
+    //   "Balls bouncing. Count: ",
+    //   count,
+    //   "balls[0]:\n",
+    //   balls[0].c,
+    //   balls[0].r,
+    //   count0,
+    //   "balls[1]:\n",
+    //   balls[1].c,
+    //   balls[1].r,
+    //   count1,
+    // );
     window.requestAnimationFrame(loop);
   }
 
