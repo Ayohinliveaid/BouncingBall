@@ -31,7 +31,6 @@ function Ball(x, y, r, vx, vy, color) {
   this.vy = vy;
   this.c = color;
   this.s = false; //size changeing flag
-  this.collision = true;
 }
 Ball.prototype.draw = function () {
   ctx.beginPath();
@@ -119,25 +118,23 @@ Ball.prototype.moveToReboundAndTraverse = function () {
   }
 };
 Ball.prototype.collide = function () {
-  if (this.collision) {
-    //鼠标控制球mouseBall碰撞检测
-    if (
-      (this.x - mouseBall.x) ** 2 + (this.y - mouseBall.y) ** 2 <
-      (this.r + mouseBall.r) ** 2
-    ) {
-      // this.c = randomColor();
-      this.reboundFixed(mouseBall);
-    }
-    balls.forEach((v) => {
-      //数组球检测
-      if (this != v) {
-        if ((this.x - v.x) ** 2 + (this.y - v.y) ** 2 < (this.r + v.r) ** 2) {
-          // this.c = randomColor();
-          this.reboundMoving(v);
-        }
-      }
-    });
+  //鼠标控制球mouseBall碰撞检测
+  if (
+    (this.x - mouseBall.x) ** 2 + (this.y - mouseBall.y) ** 2 <
+    (this.r + mouseBall.r) ** 2
+  ) {
+    // this.c = randomColor();
+    this.reboundFixed(mouseBall);
   }
+  balls.forEach((v) => {
+    //数组球检测
+    if (this != v) {
+      if ((this.x - v.x) ** 2 + (this.y - v.y) ** 2 < (this.r + v.r) ** 2) {
+        // this.c = randomColor();
+        this.reboundMoving(v);
+      }
+    }
+  });
 };
 //模拟撞击固定球，运动球只改变速度方向，法向量方向速度相反，切向量速度不变
 Ball.prototype.reboundFixed = function (fixed) {
@@ -257,7 +254,7 @@ Ball.prototype.reboundMoving = function (moving) {
 };
 
 //#初始化球数组
-var v = 7;
+var v = 5;
 // var ball=new Ball(300,300,40,random(-v,v),random(-v,v),"lightblue");
 // var ball = new Ball(300, 300, 40, random(-v, v), random(-v, v), "lightblue");
 
@@ -278,12 +275,15 @@ var balls = Array(total)
 // balls[0].r = 100;
 
 //#鼠标控制球
-var mouseBall = new Ball(40, 40, 30, 10, 10, "black");
+var mouseBall = new Ball(0, 0, 0, 0, 0, "black");
 canvas.addEventListener("pointerenter", (e) => {
   mouseBall.r = 30;
 });
 canvas.addEventListener("pointerleave", (e) => {
   mouseBall.r = 0;
+  //避免碰撞xy像素点，放到左上角实现完全消失
+  mouseBall.x = 0;
+  mouseBall.y = 0;
 });
 canvas.addEventListener("pointermove", (e) => {
   mouseBall.x = e.clientX;
@@ -314,10 +314,20 @@ function loop(timestamp) {
   //首球消失，游戏结束，输出剩余球的数量
   //只剩首球，游戏失败
 
-  // window.requestAnimationFrame(loop);
+  window.requestAnimationFrame(loop);
 
   var threshold = 2; //球视为存在的最小大小
-  let count = balls.filter((v, i) => v.r > threshold).length;
+  let count = 0;
+  let count0 = 0;
+  let count1 = 0;
+
+  for (let b of balls) {
+    if (b.r > threshold) {
+      count++;
+      if (b.c === balls[0].c) count0++;
+      else if (b.c === balls[1].c) count1++;
+    }
+  }
   // //鼠标球对抗balls[0]
   // if (balls[0].r > threshold) {
   //   if (count == 1) {
@@ -333,40 +343,38 @@ function loop(timestamp) {
   //   window.location.reload();
   // }
 
-  //balls[1]对抗balls[0]
-  let target = Math.floor(total * 0.8);
-  let count0 = balls.filter((v, i) => v.c == balls[0].c).length;
-  let count1 = balls.filter((v, i) => v.c == balls[1].c).length;
-  if (
-    count0 == 1 && //fir sec不会消失
-    count1 == 1 &&
-    balls[0].r <= threshold &&
-    balls[1].r <= threshold
-  ) {
-    alert("Congratulations!You win!");
-    window.location.reload();
-  } else if (count0 > target) {
-    alert("Balls[0] win!");
-    window.location.reload();
-  } else if (count1 > target) {
-    alert("Balls[1] win!");
-    window.location.reload();
-  } else {
-    //当半径没有到最小，继续运行
-    // console.log(
-    //   "Balls bouncing. Count: ",
-    //   count,
-    //   "balls[0]:\n",
-    //   balls[0].c,
-    //   balls[0].r,
-    //   count0,
-    //   "balls[1]:\n",
-    //   balls[1].c,
-    //   balls[1].r,
-    //   count1,
-    // );
-    window.requestAnimationFrame(loop);
-  }
+  // //balls[1]对抗balls[0]
+  // let target = Math.floor(total * 0.8);
+  // if (
+  //   count0 == 1 && //fir sec不会消失
+  //   count1 == 1 &&
+  //   balls[0].r <= threshold &&
+  //   balls[1].r <= threshold
+  // ) {
+  //   alert("Congratulations! You win!");
+  //   window.location.reload();
+  // } else if (count0 > target) {
+  //   alert("Balls[0] win!");
+  //   window.location.reload();
+  // } else if (count1 > target) {
+  //   alert("Balls[1] win!");
+  //   window.location.reload();
+  // } else {
+  //   当半径没有到最小，继续运行
+  //   console.log(
+  //     "Balls bouncing. Count: ",
+  //     count,
+  //     "balls[0]:\n",
+  //     balls[0].c,
+  //     balls[0].r,
+  //     count0,
+  //     "balls[1]:\n",
+  //     balls[1].c,
+  //     balls[1].r,
+  //     count1,
+  //   );
+  //   window.requestAnimationFrame(loop);
+  // }
 
   // if (Math.max(...balls.map((v) => v.r)) > 0.01) {
   //   //当半径没有到最小，继续运行
