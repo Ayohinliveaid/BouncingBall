@@ -8,12 +8,12 @@ let width = canvas.width;
 canvas.style.touchAction = "none"; //移动端避免滑动影响
 
 let thresholdSize = 5; //球视为存在的最小大小
-let total = 100; //球的总数
+let total = 10; //球的总数
 let lastTime = null; //记录上一帧的时间，实现小球速度为每秒移动距离，而不是每帧移动距离ball.x+=ball.vx
 let portion = 1;
 let v = 200; //balls最大速度
-let minSize = 10;
-let maxSize = 30;
+let minSize = 30;
+let maxSize = 40;
 
 function random(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
@@ -38,10 +38,12 @@ function Ball(x, y, r, vx, vy, color) {
   this.s = false; //size changeing flag
 }
 Ball.prototype.draw = function () {
-  ctx.beginPath();
-  ctx.fillStyle = this.c;
-  ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
-  ctx.fill();
+  if (this.r > thresholdSize) {
+    ctx.beginPath();
+    ctx.fillStyle = this.c;
+    ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
+    ctx.fill();
+  }
 };
 //move选择一、遇到边框自动反弹
 Ball.prototype.moveToRebound = function (portion = 1) {
@@ -285,9 +287,6 @@ canvas.addEventListener("pointerenter", (e) => {
 });
 canvas.addEventListener("pointerleave", (e) => {
   mouseBall.r = 0;
-  //避免碰撞xy像素点，放到左上角实现完全消失
-  mouseBall.x = 0;
-  mouseBall.y = 0;
 });
 canvas.addEventListener("pointermove", (e) => {
   mouseBall.x = e.clientX;
