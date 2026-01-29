@@ -8,11 +8,11 @@ let width = canvas.width;
 canvas.style.touchAction = "none"; //移动端避免滑动影响
 
 const config = {
-  thresholdSize: 5, // 球被视为存在的最小尺寸
-  amount: 3, // 球的总数量
+  thresholdSize: 2, // 球被视为存在的最小尺寸
+  amount: 20, // 球的总数量
   v: 200, // 球的最大速度（像素 / 秒）
-  minSize: 50, // 球的最小尺寸
-  maxSize: 60, // 球的最大尺寸
+  minSize: 20, // 球的最小尺寸
+  maxSize: 40, // 球的最大尺寸
 };
 
 let lastTime = null; //记录上一帧的时间，实现小球速度为每秒移动距离，而不是每帧移动距离ball.x+=ball.vx
@@ -346,7 +346,7 @@ function loop(timestamp) {
   //首球消失，游戏结束，输出剩余球的数量
   //只剩首球，游戏失败
 
-  window.requestAnimationFrame(loop);
+  // window.requestAnimationFrame(loop);
 
   let count = 0;
   let count0 = 0;
@@ -374,45 +374,45 @@ function loop(timestamp) {
   //   window.location.reload();
   // }
 
-  // //balls[1]对抗balls[0]
-  // let target = Math.floor(config.amount * 0.8);
-  // if (
-  //   count0 == 1 && //fir sec不会消失
-  //   count1 == 1 &&
-  //   balls[0].r <= config.thresholdSize &&
-  //   balls[1].r <= config.thresholdSize
-  // ) {
-  //   alert("Congratulations! You win!");
-  //   window.location.reload();
-  // } else if (count0 > target) {
-  //   alert("Balls[0] win!");
-  //   window.location.reload();
-  // } else if (count1 > target) {
-  //   alert("Balls[1] win!");
-  //   window.location.reload();
-  // } else {
-  //   当半径没有到最小，继续运行
-  //   console.log(
-  //     "Balls bouncing. Count: ",
-  //     count,
-  //     "balls[0]:\n",
-  //     balls[0].c,
-  //     balls[0].r,
-  //     count0,
-  //     "balls[1]:\n",
-  //     balls[1].c,
-  //     balls[1].r,
-  //     count1,
-  //   );
-  //   window.requestAnimationFrame(loop);
-  // }
+  //balls[1]对抗balls[0]
+  let target = Math.floor((config.amount - 2) * 0.8);
+  if (
+    count0 == 1 && //fir sec不会消失
+    count1 == 1 &&
+    balls[0].r <= config.thresholdSize &&
+    balls[1].r <= config.thresholdSize
+  ) {
+    alert("Congratulations! You win!");
+    window.location.reload();
+  } else if (count0 > target) {
+    alert("Balls[0] win!");
+    window.location.reload();
+  } else if (count1 > target) {
+    alert("Balls[1] win!");
+    window.location.reload();
+  } else {
+    // 当半径没有到最小，继续运行
+    console.log(
+      "Balls bouncing. Count: ",
+      count,
+      "balls[0]:\n",
+      balls[0].c,
+      balls[0].r,
+      count0,
+      "balls[1]:\n",
+      balls[1].c,
+      balls[1].r,
+      count1,
+    );
+    window.requestAnimationFrame(loop);
+  }
 
   // if (Math.max(...balls.map((v) => v.r)) > 0.01) {
   //   //当半径没有到最小，继续运行
   //   window.requestAnimationFrame(loop);
   //   console.log("Balls bouncing");
   // }
-  //  //cancelAnimationFrame 主要用于 取消已排队但还没执行的帧，而这里的动画是动态循环的，每次新帧都是在前一帧执行时才请求的，所以不需要取消。
+  // //cancelAnimationFrame 主要用于 取消已排队但还没执行的帧，而这里的动画是动态循环的，每次新帧都是在前一帧执行时才请求的，所以不需要取消。
   // else {
   //   window.cancelAnimationFrame(id);
   // }
