@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +8,44 @@
     <script src="./main.js" defer></script>
     <link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
     <canvas class="myCanvas"></canvas>
-      
+    <div class="introButton">INTRO</div>
+    <p class="introContent">There are two King Balls. They can convert other balls to their own color when they collide.
+        The two King Balls battle against the rest.
+        When the King Balls collide with each other, they shrink, while the other balls grow larger and turn black.
+        If either King Ball converts more than 80% of the balls to its color, you lose.
+        If you make both King Balls disappear and turn all other balls black, you win.</p>
+
+    <span>Settings:</span><label>
+        amount:
+        <input type="number" id="amount" value="20" />
+    </label>
+    <br>
+    <label>
+        thresholdSize:
+        <input type="number" id="thresholdSize" value="2" />
+    </label>
+
+
+
+
+    <label>
+        max speed (v):
+        <input type="number" id="v" value="200" />
+    </label>
+    <br>
+    <label>
+        minSize:
+        <input type="number" id="minSize" value="50" />
+    </label>
+
+    <label>
+        maxSize:
+        <input type="number" id="maxSize" value="60" />
+    </label>
+
 </body>
+
 </html>

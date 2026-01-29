@@ -1,19 +1,45 @@
 //bouncing ball
 let canvas = document.querySelector(".myCanvas");
 let ctx = canvas.getContext("2d");
-canvas.height = 600;
+canvas.height = 550;
 canvas.width = window.innerWidth;
 let height = canvas.height;
 let width = canvas.width;
 canvas.style.touchAction = "none"; //移动端避免滑动影响
 
-let thresholdSize = 5; //球视为存在的最小大小
-let total = 3; //球的总数
+const config = {
+  thresholdSize: 2, // 球被视为存在的最小尺寸
+  amount: 20, // 球的总数量
+  v: 200, // 球的最大速度（像素 / 秒）
+  minSize: 20, // 球的最小尺寸
+  maxSize: 40, // 球的最大尺寸
+};
+
 let lastTime = null; //记录上一帧的时间，实现小球速度为每秒移动距离，而不是每帧移动距离ball.x+=ball.vx
 let portion = 1;
-let v = 200; //balls最大速度
-let minSize = 50;
-let maxSize = 60;
+
+//监听页面输入
+Object.keys(config).forEach((v) => {
+  let ele = document.getElementById(v);
+  ele.addEventListener("input", (e) => {
+    config[v] = Number(e.target.value); //默认得到字符串，需要转数字
+    console.log(`config.${v} = ${config[v]}`);
+    balls.length = 0;
+    balls = Array(config.amount)
+      .fill()
+      .map(
+        () =>
+          new Ball(
+            random(0, width),
+            random(0, width),
+            random(config.minSize, config.maxSize),
+            random(-config.v, config.v),
+            random(-config.v, config.v),
+            randomColor(),
+          ),
+      );
+  });
+});
 
 function random(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
@@ -38,7 +64,7 @@ function Ball(x, y, r, vx, vy, color) {
   this.s = false; //size changeing flag
 }
 Ball.prototype.draw = function () {
-  if (this.r > thresholdSize) {
+  if (this.r > config.thresholdSize) {
     ctx.beginPath();
     ctx.fillStyle = this.c;
     ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
@@ -224,7 +250,7 @@ Ball.prototype.reboundMoving = function (moving) {
   if (balls.indexOf(moving) == 0 || balls.indexOf(moving) == 1) {
     if (balls.indexOf(this) != 0 && balls.indexOf(this) != 1) {
       if (this.c != moving.c) {
-        if (moving.r > thresholdSize) {
+        if (moving.r > config.thresholdSize) {
           // moving.r = Math.min(++moving.r, 200);
           this.r = Math.max(this.r - 1, 0);
           this.c = moving.c;
@@ -235,7 +261,7 @@ Ball.prototype.reboundMoving = function (moving) {
   if (balls.indexOf(this) == 0 || balls.indexOf(this) == 1) {
     if (balls.indexOf(moving) != 0 && balls.indexOf(moving) != 1) {
       if (moving.c != this.c) {
-        if (this.r > thresholdSize) {
+        if (this.r > config.thresholdSize) {
           moving.r = Math.max(moving.r - 1, 0);
           moving.c = this.c;
         }
@@ -261,24 +287,22 @@ Ball.prototype.reboundMoving = function (moving) {
 };
 
 //#初始化球数组
-// var ball=new Ball(300,300,40,random(-v,v),random(-v,v),"lightblue");
-// var ball = new Ball(300, 300, 40, random(-v, v), random(-v, v), "lightblue");
+// var ball=new Ball(300,300,40,random(-config.v,config.v),random(-config.v,config.v),"lightblue");
+// var ball = new Ball(300, 300, 40, random(-config.v, config.v), random(-config.v, config.v), "lightblue");
 
-var balls = Array(total)
+var balls = Array(config.amount)
   .fill()
   .map(
     () =>
       new Ball(
         random(0, width),
         random(0, width),
-        random(minSize, maxSize),
-        random(-v, v),
-        random(-v, v),
+        random(config.minSize, config.maxSize),
+        random(-config.v, config.v),
+        random(-config.v, config.v),
         randomColor(),
       ),
   );
-
-// balls[0].r = 100;
 
 //#鼠标控制球
 var mouseBall = new Ball(0, 0, 0, 0, 0, "black");
@@ -301,9 +325,9 @@ function loop(timestamp) {
   ctx.clearRect(0, 0, width, height);
   // ctx.fillRect(0, 0, width, height); //直接覆盖原来的画布，并通过半透明产生重影效果
   mouseBall.draw();
-  //r缩小到thresholdSize后直接消失
+  //r缩小到config.thresholdSize后直接消失
   // for(let i=0;i<balls.length;i++){
-  //   if(balls[i].r<thresholdSize)
+  //   if(balls[i].r<config.thresholdSize)
   // }
   if (lastTime != null) {
     portion = (timestamp - lastTime) / 1000;
@@ -322,22 +346,21 @@ function loop(timestamp) {
   //首球消失，游戏结束，输出剩余球的数量
   //只剩首球，游戏失败
 
-  window.requestAnimationFrame(loop);
+  // window.requestAnimationFrame(loop);
 
-  var thresholdSize = 2; //球视为存在的最小大小
   let count = 0;
   let count0 = 0;
   let count1 = 0;
 
   for (let b of balls) {
-    if (b.r > thresholdSize) {
+    if (b.r > config.thresholdSize) {
       count++;
       if (b.c === balls[0].c) count0++;
       else if (b.c === balls[1].c) count1++;
     }
   }
   // //鼠标球对抗balls[0]
-  // if (balls[0].r > thresholdSize) {
+  // if (balls[0].r > config.thresholdSize) {
   //   if (count == 1) {
   //     alert("all available balls lost!");
   //     window.location.reload();
@@ -351,45 +374,45 @@ function loop(timestamp) {
   //   window.location.reload();
   // }
 
-  // //balls[1]对抗balls[0]
-  // let target = Math.floor(total * 0.8);
-  // if (
-  //   count0 == 1 && //fir sec不会消失
-  //   count1 == 1 &&
-  //   balls[0].r <= thresholdSize &&
-  //   balls[1].r <= thresholdSize
-  // ) {
-  //   alert("Congratulations! You win!");
-  //   window.location.reload();
-  // } else if (count0 > target) {
-  //   alert("Balls[0] win!");
-  //   window.location.reload();
-  // } else if (count1 > target) {
-  //   alert("Balls[1] win!");
-  //   window.location.reload();
-  // } else {
-  //   当半径没有到最小，继续运行
-  //   console.log(
-  //     "Balls bouncing. Count: ",
-  //     count,
-  //     "balls[0]:\n",
-  //     balls[0].c,
-  //     balls[0].r,
-  //     count0,
-  //     "balls[1]:\n",
-  //     balls[1].c,
-  //     balls[1].r,
-  //     count1,
-  //   );
-  //   window.requestAnimationFrame(loop);
-  // }
+  //balls[1]对抗balls[0]
+  let target = Math.floor((config.amount - 2) * 0.8);
+  if (
+    count0 == 1 && //fir sec不会消失
+    count1 == 1 &&
+    balls[0].r <= config.thresholdSize &&
+    balls[1].r <= config.thresholdSize
+  ) {
+    alert("Congratulations! You win!");
+    window.location.reload();
+  } else if (count0 > target) {
+    alert("Balls[0] win!");
+    window.location.reload();
+  } else if (count1 > target) {
+    alert("Balls[1] win!");
+    window.location.reload();
+  } else {
+    // 当半径没有到最小，继续运行
+    console.log(
+      "Balls bouncing. Count: ",
+      count,
+      "balls[0]:\n",
+      balls[0].c,
+      balls[0].r,
+      count0,
+      "balls[1]:\n",
+      balls[1].c,
+      balls[1].r,
+      count1,
+    );
+    window.requestAnimationFrame(loop);
+  }
 
   // if (Math.max(...balls.map((v) => v.r)) > 0.01) {
   //   //当半径没有到最小，继续运行
   //   window.requestAnimationFrame(loop);
   //   console.log("Balls bouncing");
   // }
-  //  //cancelAnimationFrame 主要用于 取消已排队但还没执行的帧，而这里的动画是动态循环的，每次新帧都是在前一帧执行时才请求的，所以不需要取消。
+  // //cancelAnimationFrame 主要用于 取消已排队但还没执行的帧，而这里的动画是动态循环的，每次新帧都是在前一帧执行时才请求的，所以不需要取消。
   // else {
   //   window.cancelAnimationFrame(id);
   // }

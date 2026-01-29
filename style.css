@@ -1,17 +1,28 @@
-body{
-    margin:0;
-    overflow: hidden;
+body {
+  margin: 0;
+  overflow: hidden;
 }
 
-
-.myCanvas{
-
-
+.myCanvas {
 }
 
-.runner{
-    height:30px;
-    width:50px;
-    background-color:grey;
- 
+.introContent {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: lightgrey;
+  padding: 10px;
+  display: none;
+}
+
+.introButton {
+  height: 20px;
+  aspect-ratio: 1 / 2;
+  background: lightgrey;
+  cursor: pointer;
+}
+
+.introButton:hover + p {
+  display: block;
 }
