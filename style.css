@@ -14,6 +14,7 @@ body {
   background: lightgrey;
   padding: 10px;
   display: none;
+  border-radius: 10px;
 }
 
 .introButton {
@@ -21,8 +22,22 @@ body {
   aspect-ratio: 1 / 2;
   background: lightgrey;
   cursor: pointer;
+  margin: 0 10px;
+  border-radius: 10px;
+  padding: 5px;
 }
 
-.introButton:hover + p {
+.introButton:hover  p {
   display: block;
+}
+
+.setting {
+  margin: 10px;
+  display: grid;
+  grid-template: repeat(3, 1fr) / repeat(2, 1fr);
+}
+
+label span {
+  display: inline-block;
+  width: 120px;
 }
