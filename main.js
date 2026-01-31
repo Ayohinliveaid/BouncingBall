@@ -377,10 +377,8 @@ function loop(timestamp) {
   //balls[1]对抗balls[0]
   let target = Math.floor((config.amount - 2) * 0.8);
   if (
-    count0 == 1 && //fir sec不会消失
-    count1 == 1 &&
-    balls[0].r <= config.thresholdSize &&
-    balls[1].r <= config.thresholdSize
+    count0 == 0 && //fir sec不会消失
+    count1 == 0
   ) {
     alert("Congratulations! You win!");
     window.location.reload();
