@@ -17,11 +17,15 @@ const config = {
 
 let lastTime = null; //记录上一帧的时间，实现小球速度为每秒移动距离，而不是每帧移动距离ball.x+=ball.vx
 let portion = 1;
+let minAmount = 5;
 
 //监听页面输入
 Object.keys(config).forEach((v) => {
   let ele = document.getElementById(v);
   ele.addEventListener("input", (e) => {
+    if (v == "amount" && Number(e.target.value) < minAmount) {
+      e.target.value = minAmount;
+    }
     config[v] = Number(e.target.value); //默认得到字符串，需要转数字
     console.log(`config.${v} = ${config[v]}`);
     balls.length = 0;
@@ -310,7 +314,7 @@ canvas.addEventListener("pointerenter", (e) => {
   // mouseBall.r = 30;
 });
 canvas.addEventListener("pointerleave", (e) => {
-  mouseBall.r = 0;
+  mouseBall.r = 0; //小于thresholdSize不会被绘制
 });
 canvas.addEventListener("pointermove", (e) => {
   mouseBall.r = 30;
