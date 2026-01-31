@@ -27,7 +27,7 @@ Object.keys(config).forEach((v) => {
       e.target.value = minAmount;
     }
     config[v] = Number(e.target.value); //默认得到字符串，需要转数字
-    console.log(`config.${v} = ${config[v]}`);
+    // console.log(`config.${v} = ${config[v]}`);
     balls.length = 0;
     balls = Array(config.amount)
       .fill()
@@ -393,19 +393,18 @@ function loop(timestamp) {
     alert("Balls[1] win!");
     window.location.reload();
   } else {
-    // 当半径没有到最小，继续运行
-    console.log(
-      "Balls bouncing. Count: ",
-      count,
-      "balls[0]:\n",
-      balls[0].c,
-      balls[0].r,
-      count0,
-      "balls[1]:\n",
-      balls[1].c,
-      balls[1].r,
-      count1,
-    );
+    // console.log(
+    //   "Balls bouncing. Count: ",
+    //   count,
+    //   "balls[0]:\n",
+    //   balls[0].c,
+    //   balls[0].r,
+    //   count0,
+    //   "balls[1]:\n",
+    //   balls[1].c,
+    //   balls[1].r,
+    //   count1,
+    // );
     window.requestAnimationFrame(loop);
   }
 
