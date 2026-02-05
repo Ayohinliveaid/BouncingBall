@@ -394,10 +394,10 @@ function loop(timestamp) {
     alert("Congratulations! You win!");
     window.location.reload();
   } else if (count0 > target) {
-    alert("The X ball win!");
+    alert("X ball wins!");
     window.location.reload();
   } else if (count1 > target) {
-    alert("The Y ball win!");
+    alert("Y ball wins!");
     window.location.reload();
   } else {
     // console.log(
