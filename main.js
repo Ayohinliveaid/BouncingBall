@@ -18,30 +18,37 @@ const config = {
 let lastTime = null; //记录上一帧的时间，实现小球速度为每秒移动距离，而不是每帧移动距离ball.x+=ball.vx
 let portion = 1;
 let minAmount = 5;
+let maxAmount = 100;
 
 //监听页面输入
 Object.keys(config).forEach((v) => {
   let ele = document.getElementById(v);
   ele.addEventListener("input", (e) => {
-    if (v == "amount" && Number(e.target.value) < minAmount) {
-      e.target.value = minAmount;
-    }
-    config[v] = Number(e.target.value); //默认得到字符串，需要转数字
-    // console.log(`config.${v} = ${config[v]}`);
-    balls.length = 0;
-    balls = Array(config.amount)
-      .fill()
-      .map(
-        () =>
-          new Ball(
-            random(0, width),
-            random(0, width),
-            random(config.minSize, config.maxSize),
-            random(-config.v, config.v),
-            random(-config.v, config.v),
-            randomColor(),
-          ),
-      );
+    setTimeout(() => {
+      if (
+        v == "amount" &&
+        (Number(e.target.value) < minAmount ||
+          Number(e.target.value) > maxAmount)
+      ) {
+        e.target.value = config.amount;
+      }
+      config[v] = Number(e.target.value); //默认得到字符串，需要转数字
+      // console.log(`config.${v} = ${config[v]}`);
+      balls.length = 0;
+      balls = Array(config.amount)
+        .fill()
+        .map(
+          () =>
+            new Ball(
+              random(0, width),
+              random(0, width),
+              random(config.minSize, config.maxSize),
+              random(-config.v, config.v),
+              random(-config.v, config.v),
+              randomColor(),
+            ),
+        );
+    }, 1000);
   });
 });
 
